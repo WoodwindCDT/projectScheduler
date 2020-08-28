@@ -1,12 +1,14 @@
 body {
-  font-family: 'Open Sans', sans-serif;
-  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 17px;
   line-height: 1;
 }
 
-textarea{
+textarea {
   background: transparent;
   border: none;
+  width: 100% ;
+  height: 100%;
   resize: none;
   color: #000000;
   border-left: 1px solid black;
@@ -25,21 +27,33 @@ textarea{
   white-space: pre-wrap;
 }
 
+.textDisplay {
+  height: 100%;
+  padding: 0;
+  border-top: 1px solid black;
+}
+
+.button-area {
+  padding: 0;
+  margin: 0;
+}
+
 .time-block{
+  display: inline-block;
+  padding: 10px;
   text-align: center;
-  border-radius: 15px;
 }
 
 .row {
+  padding: 0;
   white-space: pre-wrap;
   height: 80px;
-  border-top: 1px solid white;;
 }
 
 .hour {
   background-color: #ffffff;
   color: #000000;
-  border-top: 1px dashed #000000;
+  border-top: 1px solid #000000;
 }
 
 .past {
@@ -58,14 +72,17 @@ textarea{
 }
 
 .saveBtn {
-  border-left: 1px solid black;
-  border-top-right-radius: 15px;
-  border-bottom-right-radius: 15px;
-  background-color: #06AED5;
+  background-color: #286be7;
   color: white;
+  border-style: none;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  height: 99.37%;
+  width: 70%;
 }
 
-.saveBtn i:hover {
-  font-size: 20px;
-  transition: all .3s ease-in-out;
+.saveBtn:hover {
+  font-size: 18px;
+  background: linear-gradient(0deg, rgba(66,63,136,1) 0%, rgba(40,107,231,1) 44%, rgba(104,131,219,1) 100%);
+  transition: all .2s ease-in-out;
 }
