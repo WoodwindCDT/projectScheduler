@@ -1,108 +1,81 @@
-// Work times
-var times = {
-'9 am': '',
-'10 am': '', 
-'11 am': '', 
-'12 pm': '', 
-'1 pm': '', 
-'2 pm': '',
-'3 pm': '',
-'4 pm': '',
-'5 pm': ''
-};
+$(document).ready(function() {
+    // Current Date from Moment
+    const now = moment().format('LL');
 
-$(document).ready(function(){
-    // To set localStorage
-    // if none, set it in localStorage
-    if (!localStorage.getItem('times')) {
-        updateTasks(times);
+    // Setting Date at top of page
+    let pageDate = $('#currentDay');
+    $(pageDate).text(now);
+
+    var scheduler = JSON.parse(localStorage.getItem("scheduler")) || startScheduler();
+
+    for (var hour in scheduler) {
+        var tr = $("<tr>")
+        .addClass("row data-row")
+        var divTime = $("<td>")
+        .addClass("col-2 time-block hour")
+        .text(hour);
+        var textEvent = $("<td>")
+        .addClass("textDisplay col-9")
+        
+        var currHr;
+
+        if (moment(hour, "h a").isSame(moment(), "hour")) {
+            currHr = "present";
         }
-        else {
-        updateTasks(JSON.parse(localStorage.getItem('times')));
+        else if (moment(hour, "h a").isAfter(moment())) {
+            currHr = "future";
+        }
+        else if (moment(hour, "h a").isBefore(moment())) {
+            currHr = "past";
+        }
+
+        var divText = $("<textarea>")
+        .addClass("description")
+        .addClass(currHr)
+        .attr('data-time', hour)
+        .val(scheduler[hour]);
+
+        divText.appendTo(textEvent);
+
+        var divSave = $("<td>")
+        .addClass("col-1 button-area saveBtn");
+
+        var checkMark = $("<span>")
+        .addClass("oi oi-check");
+
+        checkMark.appendTo(divSave);
+
+        tr.append(divTime, textEvent, divSave);
+
+        tr.appendTo($("#rowStart"));
     };
-});
 
-// Current Date from Moment
-const now = moment().format('LL');
+    function startScheduler() {
+        var tempArr = {};
 
-// Setting Date at top of page
-let pageDate = $('#currentDay');
-$(pageDate).text(now);
-
-var count = 1;
-for(const property in times) {
-    // Setting index values to corresponding areas to identify
-    var textEntry = "#text-entry" + count;
-    $(textEntry).text(times[property]);
-    var timeId = "#time" + count;
-    var currHR = moment().hour();
-    var timeString = $(timeId).text();
-    var timeNum = numberStrings(timeString);
-
-    // Changing text-area colors according to hours
-    if (timeNum < currHR) {
-    $(textEntry).addClass(".past");
+        for (var i = 9; i < 18; i++) {
+            tempArr[moment(i, "H").format("h a")] = "";
+        }
+        return tempArr;
     }
-    else if (timeNum > currHR) {
-    $(textEntry).addClass(".future");
-    } else {
-    $(textEntry).addClass(".present");
-    }
-    count ++;
-};
 
-// Save Button On Click
-$('.saveBtn').click(function(){
-    value = $(this).siblings(".description").val();
-    hourString = $(this).siblings('.hour').text();
+    $(".saveBtn").on("click", function() {
+        var hours = $(this)
+        .parent()
+        .find(".description")
+        .attr("data-time");
+        var text = $(this)
+        .parent()
+		.find(".description")
+        .val();
 
-    // Starting Save tasks by creating
-    createTasks(hourString, value);
-});
+        scheduler[hours] = text;
 
-// Returning stringed number for each hour
-function numberStrings(hourString) {
-    switch(hourString) {
-      case "9 am": return 9;
-      case "10 am": return 10;
-      case "11 am": return 11;
-      case "12 pm": return 12;
-      case "1 pm": return 13;
-      case "2 pm": return 14;
-      case "3 pm": return 15;
-      case "4 pm": return 16;
-      case "5 pm": return 17;
-    };
-};
-
-function loadTasks() {
-    result = localStorage.getItem('times')
-    return (result ? result : times);
-};
-
-function storageSet() {
-    localStorage.setItem('times', JSON.stringify(times));
-};
-
-function saveToStorage(timeObj) {
-    localStorage.setItem('times', JSON.stringify(timeObj));
-}
-
-function createTasks(hourString, val) {
-    if(!localStorage.getItem('times')) {
-        storageSet();
-    }
-    // User data set to pair with hours in localStorage
-    var userData = JSON.parse(localStorage.getItem('times'));
-    userData[hourString] = val;
-
-    saveToStorage(userData);
-};
-
-    // Updating textarea with localStorage
-function updateTasks(dataObject) {
-    $('.row').each(function() {
-        var res = $(this).children('div');
-        $(this).children('textarea').text(dataObject[res.text()]);
+        localStorage.setItem("scheduler", JSON.stringify(scheduler));
     });
-};
+
+    $(".clearBtn").on("click", function() {
+        window.localStorage.clear();
+        $("textarea").val("");
+    });
+});
